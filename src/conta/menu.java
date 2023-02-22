@@ -3,6 +3,8 @@ package conta;
 import java.util.Scanner;
 
 import conta.model.Conta;
+import conta.model.ContaCorrente;
+import conta.model.ContaPoupanca;
 import conta.util.Cores;
 
 public class menu {
@@ -11,38 +13,30 @@ public class menu {
 
 		Scanner leia = new Scanner(System.in);
 		
-		//criamos o objeto conta c1
 	
-		Conta c1 = new Conta(1,  123, 1, "Erica Araújo" , 30000.0f);
-		
-		// visualizar os dados da conta c1
+		Conta c1 = new Conta(3,  123, 1, "Erica Araújo" , 30000.0f);
 		c1.visualizar();
-       
-		// alteramos o saldo da conta c1
-		c1.setSaldo(35000.0f);
-		
-		//visualizamos apenas o saldo da conta c1
-		System.out.println("\n\n" + c1.getSaldo());
-		
-		//criamos o objeto conta c2
-        Conta c2 = new Conta(2,  123, 1, "Rebeca" , 50000.0f);
-		
-        // visualizar a conta c2
-		c2.visualizar();
-		
-		// efetuamos um saque na conta c2 e visualizamos novo saldo 
-	    if(c2.sacar(1000000.0f));
-		System.out.println("\n\n" + c2.getSaldo());
-		
-		// efetuamos um deposito na conta c1
-		
-		c1.depositar(10000.0f);
-		
-		// visualizarmos os dados da conta c1 apos o deposito
+		c1.sacar(12000.0f);
 		c1.visualizar();
+		c1.depositar(5000.0f);
+		c1.visualizar();
+		
+		ContaCorrente cc1 = new ContaCorrente(1, 123, 1, "José da Silva", 0.0f, 1000.0f);
+		cc1.visualizar();
+		cc1.sacar(12000.0f);
+		cc1.visualizar();
+		cc1.depositar(5000.0f);
+		cc1.visualizar();
 
+		ContaPoupanca cp1 = new ContaPoupanca(2, 123, 2, "Maria dos Santos", 100000.0f, 15);
+		cp1.visualizar();
+		cp1.sacar(1000.0f);
+		cp1.visualizar();
+		cp1.depositar(5000.0f);
+		cp1.visualizar();
+		
 		int opcao;
-
+		
 		while (true) {
 
 			System.out.println(Cores.TEXT_YELLOW + Cores.ANSI_BLACK_BACKGROUND + "*****************************************");
@@ -64,8 +58,7 @@ public class menu {
 			System.out.println("*****************************************");
 			System.out.println("Entre com a opção desejada:              ");
 			System.out.println("                                         " + Cores.TEXT_RESET);
-
-			opcao = leia.nextInt();
+            opcao = leia.nextInt();
 
 			if (opcao == 9) {
 				System.out.println("\nBanco do Brazil com z - 0 seu Futuro começa aqui!");
