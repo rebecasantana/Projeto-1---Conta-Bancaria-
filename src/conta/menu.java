@@ -1,29 +1,39 @@
 package conta;
 
-import conta.model.Conta;
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+import conta.controller.ContaController;
 import conta.model.ContaCorrente;
 import conta.model.ContaPoupanca;
 import conta.util.Cores;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Scanner;
+public class menu {
 
-public class menu  {
-       public static void main(String[] args) {
+	public static void main(String[] args) {
     	   
-    	   Locale.setDefault(Locale.US);
            Scanner sc = new Scanner(System.in);
            
-           ContaCorrente c3 = new ContaCorrente(1, 245, 1, "José da silva", 10000, 5000);
-           c3.visualizar();
+           ContaController contas = new  ContaController();
+           
+			System.out.println("\nCriar Contas\n");
 
-           ContaPoupanca c4 = new ContaPoupanca(2, 134,2,"Maria dos Santos",100000.0f, 15);
-           c4.visualizar();
+			ContaCorrente cc1 = new ContaCorrente(contas.gerarNumero(), 123, 1, "João da Silva", 1000f, 100.0f);
+			contas.cadastrar(cc1);
 
+			ContaCorrente cc2 = new ContaCorrente(contas.gerarNumero(), 124, 1, "Maria da Silva", 2000f, 100.0f);
+			contas.cadastrar(cc2);
 
-		   int opcao;
+			ContaPoupanca cp1 = new ContaPoupanca(contas.gerarNumero(), 125, 2, "Mariana dos Santos", 4000f, 12);
+			contas.cadastrar(cp1);
 
+			ContaPoupanca cp2 = new ContaPoupanca(contas.gerarNumero(), 125, 2, "Juliana Ramos", 8000f, 15);
+			contas.cadastrar(cp2);
+
+			contas.listarTodas();
+           
+			int opcao;
 			int agencia, tipo, aniversario, numero, numeroDestino;
 			String titular;
 			float saldo, limite, valor;
@@ -51,87 +61,108 @@ public class menu  {
 			System.out.println("Entre com a opção desejada:                          ");
 			System.out.println("                                                     " + Cores.TEXT_RESET);
 			
-			opcao = sc.nextInt();
+			try {
+			    opcao = sc.nextInt();
+			}catch(InputMismatchException e ) {
+				System.out.println("Digite valores inteiros!");
+				sc.nextLine();
+				opcao=0;
+			}
 
             if (opcao == 9) {
                 System.out.println("\nBanco do Brazil com z - 0 seu Futuro começa aqui!");
+                sc.close();
                 System.exit(0);
             }
 
             switch (opcao) {
-                case 1:
-                    System.out.println("1- Criar Conta\n\n");
-                    System.out.println("Número da Agencia: ");
-                    agencia = sc.nextInt();
-
-                    System.out.println("Nome do Titular: ");
-                    sc.skip("\\R?");
-                    titular = sc.nextLine();
-                    do {
+                case 1:                 
+                	System.out.println("Criar Conta\n\n");
+                	System.out.println("Número da Agencia: ");
+					agencia = sc.nextInt();
+					System.out.println("Nome do Titular: ");
+					sc.skip("\\R?");
+					titular =  sc.nextLine();
+                	do {
                         System.out.println("Tipo da Conta (1-CC / 2-CP:  ");
                         tipo = sc.nextInt();
-                    } while (tipo < 1 && tipo > 2);
+                    }while (tipo < 1 && tipo > 2);
 
                     System.out.println("Saldo da Conta: ");
                     saldo = sc.nextFloat();
 
                     switch (tipo) {
-                        case 1 -> {
-                            System.out.println("Limite da Conta Corrente: ");
-                            limite = sc.nextFloat();
-                            ContaCorrente cc = new ContaCorrente(0, agencia, tipo, titular, saldo, limite);
-                        }
-                        case 2 -> {
-                            System.out.println("Aniversário da Conta Poupança: ");
-                            aniversario = sc.nextInt();
-                            ContaPoupanca cp = new ContaPoupanca(0, agencia, tipo, titular, saldo, aniversario);
-                        }
+                    case 1 -> {
+                        System.out.println("Limite da Conta Corrente: ");
+                        limite = sc.nextFloat();
+                        contas.cadastrar(new ContaCorrente(contas.gerarNumero(),agencia, tipo, titular, saldo, limite));
                     }
+                    case 2 -> {
+                        System.out.println("Aniversário da Conta Poupança: ");
+                        aniversario = sc.nextInt();
+                        contas.cadastrar(new ContaPoupanca(contas.gerarNumero(), agencia, tipo, titular, saldo, aniversario));
+                    }
+                }
                     keyPress();
                     break;
                 case 2:
                     System.out.println("2- Listar todas Contas");
+                    contas.listarTodas();                 
                     keyPress();
                     break;
                 case 3:
                     System.out.println("3- Buscar Conta por Numero");
                     System.out.println("Número da Conta: ");
-                    numero = sc.nextInt();
+                    numero = sc.nextInt();                    
+                    contas.procurarPorNumero(numero);                    
                     keyPress();
                     break;
                 case 4:
                     System.out.println("4- Atualizar Dados da Conta");
                     System.out.println("Número da Agencia: ");
-                    agencia = sc.nextInt();
+                    numero = sc.nextInt();
 
-                    System.out.println("Nome do Titular: ");
-                    sc.skip("\\R?");
-                    titular = sc.nextLine();
-                    do {
-                        System.out.println("Tipo da Conta (1-CC / 2-CP:  ");
-                        tipo = sc.nextInt();
-                    } while (tipo < 1 && tipo > 2);
+                    
+                    if (contas.buscarNaCollection(numero) != null) {
+                        System.out.println("Número da Agencia: ");
+                        agencia = sc.nextInt();
+                        
+                        System.out.println("Nome do Titular: ");
+                        sc.skip("\\R?");
+                        titular = sc.nextLine();
 
-                    System.out.println("Saldo da Conta: ");
-                    saldo = sc.nextFloat();
+                        System.out.println("Saldo da Conta: ");
+                        saldo = sc.nextFloat();
+
+                        tipo = contas.retornaTipo(numero);
 
                     switch (tipo) {
                         case 1 -> {
                             System.out.println("Limite da Conta Corrente: ");
                             limite = sc.nextFloat();
-                            ContaCorrente cc = new ContaCorrente(0, agencia, tipo, titular, saldo, limite);
+                            contas.atualizar(new ContaCorrente(numero,agencia, tipo, titular, saldo, limite));
                         }
                         case 2 -> {
                             System.out.println("Aniversário da Conta Poupança: ");
                             aniversario = sc.nextInt();
-                            ContaPoupanca cp = new ContaPoupanca(0, agencia, tipo, titular, saldo, aniversario);
+                            contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
                         }
+                        default ->{
+                            System.out.println("Tipo de Conta inválido!");
+
+                        }
+                    }
+                    
+                    } else {
+                        System.out.println("Conta não encontrada!");
                     }
                     keyPress();
                     break;
                 case 5:
                     System.out.println("5- Apagar Conta");
                     System.out.println("Número da Conta: ");
+                    numero = sc.nextInt();
+                    contas.deletar(numero);
 
                     keyPress();
                     break;
@@ -164,21 +195,22 @@ public class menu  {
                     break;
                 default:
                     System.out.println("Opção inválida!");
+                   
             }
         }
     }
 
-    public static void keyPress() {
+	public static void keyPress() {
 
-        try {
+		try {
 
-            System.out.println(Cores.TEXT_RESET + "\n\nPressione Enter para Continuar...");
-            System.in.read();
+			System.out.println(Cores.TEXT_RESET + "\n\nPressione Enter para Continuar...");
+			System.in.read();
 
-        } catch (IOException e) {
+		} catch (IOException e) {
 
-            System.out.println("Você pressionou uma tecla diferente de enter!");
+			System.out.println("Você pressionou uma tecla diferente de enter!");
 
-        }
-    }
+		}
+	}
 }
