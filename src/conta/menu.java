@@ -1,22 +1,31 @@
 package conta;
 
-import java.io.IOException;
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
 import conta.controller.ContaController;
+import conta.model.Conta;
 import conta.model.ContaCorrente;
 import conta.model.ContaPoupanca;
 import conta.util.Cores;
 
+import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Locale;
+import java.util.Scanner;
+
 public class menu {
 
 	public static void main(String[] args) {
-    	   
-           Scanner sc = new Scanner(System.in);
+        
+		Locale.setDefault(Locale.US);
+        Scanner sc = new Scanner(System.in);
            
            ContaController contas = new  ContaController();
            
+			int opcao;
+			int agencia, tipo, aniversario, numero, numeroDestino;
+			String titular;
+			float saldo, limite, valor;
+			
+			
 			System.out.println("\nCriar Contas\n");
 
 			ContaCorrente cc1 = new ContaCorrente(contas.gerarNumero(), 123, 1, "João da Silva", 1000f, 100.0f);
@@ -32,11 +41,6 @@ public class menu {
 			contas.cadastrar(cp2);
 
 			contas.listarTodas();
-           
-			int opcao;
-			int agencia, tipo, aniversario, numero, numeroDestino;
-			String titular;
-			float saldo, limite, valor;
 
 		while (true) {
 
@@ -168,15 +172,26 @@ public class menu {
                     break;
                 case 6:
                     System.out.println("6- Sacar");
+                    
                     System.out.println("Número da Conta: ");
+                    numero = sc.nextInt();
+                    
                     System.out.println("Valor do Saque: ");
+                    valor = sc.nextFloat();
+                    
+                    contas.depositar(numero, valor);
 
                     keyPress();
                     break;
                 case 7:
                     System.out.println("7- Depositar");
                     System.out.println("Número da Conta: ");
+                    numero = sc.nextInt();
                     System.out.println("Valor do depósito: ");
+                    valor = sc.nextFloat();
+                    
+                    contas.depositar(numero, valor);
+                    
                     keyPress();
                     break;
                 case 8:
@@ -190,6 +205,9 @@ public class menu {
 
                     System.out.println("Valor da Transferência: ");
                     valor = sc.nextFloat();
+                    
+                    
+                    contas.transferir(numero, numeroDestino, valor);
 
                     keyPress();
                     break;
